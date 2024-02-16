@@ -9,6 +9,7 @@ import {getActiveAccount} from '../../../../store/selectors/accounts/accounts-ts
 import {useSelector} from 'react-redux';
 import {getAccountUsageViewType} from '../../../../store/selectors/accounts/account-usage';
 import ErrorBoundary from '../../../../components/ErrorBoundary/ErrorBoundary';
+import {AttributeModal} from './AttributeModal';
 
 const block = cn('accounts');
 
@@ -33,6 +34,7 @@ function AccountDetailedUsageTab() {
                 toolbar={<AccountUsageToolbar />}
                 content={<AccountUsageDetails />}
             />
+            <AttributeModal />
         </ErrorBoundary>
     );
 }

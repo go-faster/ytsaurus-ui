@@ -30,7 +30,31 @@ export interface AccountUsageData {
     row_count: number;
 }
 
-export interface AccountUsageDataItem extends MediumInfo {
+type MediumKey =
+    | 'capone212_ssd_blobs'
+    | 'default'
+    | 'ssd_blobs_sas'
+    | 'default_sas'
+    | 'achulkov2_default'
+    | 'killme'
+    | 'achulkov2_ssd_journals'
+    | 'testing'
+    | 'ssd_blobs'
+    | 'capone212_ssd_journals'
+    | 'test'
+    | 'ssd_journals'
+    | 'ssd_experiment'
+    | 'cloud'
+    | 'foo'
+    | 'cache'
+    | 'in_memory'
+    | 'ssd_journals_sas'
+    | 'hadj';
+
+export type MediumKeyTemplate = `medium:${MediumKey}`;
+export type VersionedKeyTemplate = `versioned:medium:${MediumKey}`;
+
+export type AccountUsageDataItem = {
     acl_status?: 'deny' | 'allow';
 
     account: string;
@@ -47,10 +71,13 @@ export interface AccountUsageDataItem extends MediumInfo {
     node_count: number;
     tablet_count: 0;
     tablet_static_memory: 0;
-}
-
-// type MediumKey = `medium:${string}`;
-type MediumInfo = {
-    // TODO: fix me later
-    // [K in MediumKey]: number;
-};
+    'versioned:master_memory': null | number;
+    'versioned:chunk_count': null | number;
+    'versioned:direct_child_count': null | number;
+    'versioned:disk_space': null | number;
+    'versioned:node_count': null | number;
+    'versioned:recursive_versioned_resource_usage': null | number;
+    'versioned:tablet_count': null | number;
+    'versioned:tablet_static_memory': null | number;
+} & Record<`medium:${MediumKey}`, null | number> &
+    Record<`versioned:medium:${MediumKey}`, null | number>;

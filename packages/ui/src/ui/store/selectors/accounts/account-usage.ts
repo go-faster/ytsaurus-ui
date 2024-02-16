@@ -121,6 +121,20 @@ export const getAccountUsageTreeDiffRowCount = (state: RootState) =>
     state.accounts.usage.treeDiff.response?.row_count || 0;
 export const getAccountUsageTreeDiffItemsBasePath = (state: RootState) =>
     state.accounts.usage.treeDiff.base_path;
+export const getAccountsAttributes = (state: RootState) => state.accounts.attributes;
+
+export const getAttributeModal = createSelector(
+    [getAccountsAttributes],
+    ({items, isVisible, isLoading, activeId}) => {
+        const data = activeId && activeId in items ? JSON.parse(items[activeId]) : null;
+
+        return {
+            isVisible,
+            isLoading,
+            data,
+        };
+    },
+);
 
 export const isAccountsUsageDiffView = createSelector([getAccountUsageViewType], (viewType) => {
     return viewType?.endsWith('-diff');

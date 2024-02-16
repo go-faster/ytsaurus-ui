@@ -1,0 +1,10 @@
+.detail-table-cell {
+    &__value {
+        &_diff_plus {
+            color: var(--danger-color);
+        }
+        &_diff_minus {
+            color: var(--success-color);
+        }
+    }
+}
