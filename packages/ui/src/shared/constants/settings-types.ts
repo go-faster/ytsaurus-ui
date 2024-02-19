@@ -70,6 +70,8 @@ interface AccountsSettings {
 
 interface QueryTrackerSettings {
     'global::queryTracker::queriesListSidebarVisibilityMode': boolean;
+    'local::queryTracker::history::AllColumns': string[];
+    'local::queryTracker::history::MyColumns': string[];
 }
 
 interface ChytSettings {

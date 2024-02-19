@@ -4,6 +4,7 @@ import {getCurrentUserName} from '../../../../store/selectors/global';
 import {QueriesListParams} from '../api';
 import {isQueryProgress} from '../../utils/query';
 import {QueriesListFilterPresets} from './types';
+import {getSettingsData} from '../../../../store/selectors/settings-base';
 
 export const getQueriesListState = (state: RootState) => state.queryTracker.list;
 
@@ -74,4 +75,12 @@ export function getQueriesListFilterParams(state: RootState): QueriesListParams 
         ...filter,
         user: undefined,
     };
+}
+
+export function getQueryListHistoryMyColumns(state: RootState) {
+    return getSettingsData(state)['local::queryTracker::history::MyColumns'];
+}
+
+export function getQueryListHistoryAllColumns(state: RootState) {
+    return getSettingsData(state)['local::queryTracker::history::AllColumns'];
 }
