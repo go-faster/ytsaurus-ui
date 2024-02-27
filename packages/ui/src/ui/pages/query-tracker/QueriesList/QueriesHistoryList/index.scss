@@ -45,6 +45,19 @@
         width: auto;
         overflow: visible;
     }
+
+    &_header {
+        padding: 8px 0;
+
+        &:hover {
+            background: transparent;
+            cursor: auto;
+        }
+    }
+
+    &__separator {
+        text-align: center;
+    }
 }
 
 .queries-history-list {
