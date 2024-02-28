@@ -11,7 +11,7 @@ import {
 } from '../../reducers/scheduling/expanded-pools';
 
 import {YTApiId, ytApiV3Id} from '../../../rum/rum-wrap-api';
-import {splitBatchResults} from '../../../utils/utils';
+import {splitBatchResults, wrapApiPromiseByToaster} from '../../../utils/utils';
 import {makeGet, makeList} from '../../../utils/batch';
 import {
     CHANGE_POOL,
@@ -23,6 +23,8 @@ import {
 } from '../../../constants/scheduling';
 import {calculatePoolPath, getPool, getPools, getTree} from '../../selectors/scheduling/scheduling';
 import {
+    getExpandedPoolCypressData,
+    getExpandedPoolsDistributionSourcePools,
     getExpandedPoolsLoadAll,
     getSchedulingOperationsExpandedPools,
 } from '../../selectors/scheduling/expanded-pools';
@@ -195,20 +197,7 @@ function loadExpandedOperationsAndPools(tree: string): ExpandedPoolsThunkAction 
                 makeGet(`//sys/pool_trees/${tree}`, {attributes: POOL_TREE_GET_ATTRS}),
             );
         } else {
-            poolsExpandedPools.forEach((pool) => {
-                poolsRequests.push(
-                    makeGet(`//sys/scheduler/orchid/scheduler/pool_trees/${tree}/pools/${pool}`, {
-                        fields: POOL_FIELDS_TO_LOAD,
-                    }),
-                );
-                poolsChildrenRequests.push(
-                    makeGet(
-                        `//sys/scheduler/orchid/scheduler/pool_trees/${tree}/child_pools_by_pool/${pool}`,
-                        {
-                            fields: POOL_FIELDS_TO_LOAD,
-                        },
-                    ),
-                );
+            const addPoolCypressDataRequest = (pool: string) => {
                 const {parentPoolPath, isEphemeral} = expandedPools.get(pool) ?? {};
                 const cypressDataPath = parentPoolPath
                     ? `//sys/pool_trees/${tree}/${parentPoolPath}/${pool}`
@@ -223,6 +212,28 @@ function loadExpandedOperationsAndPools(tree: string): ExpandedPoolsThunkAction 
                         ),
                     );
                 }
+            };
+
+            poolsExpandedPools.forEach((pool) => {
+                poolsRequests.push(
+                    makeGet(`//sys/scheduler/orchid/scheduler/pool_trees/${tree}/pools/${pool}`, {
+                        fields: POOL_FIELDS_TO_LOAD,
+                    }),
+                );
+                poolsChildrenRequests.push(
+                    makeGet(
+                        `//sys/scheduler/orchid/scheduler/pool_trees/${tree}/child_pools_by_pool/${pool}`,
+                        {
+                            fields: POOL_FIELDS_TO_LOAD,
+                        },
+                    ),
+                );
+                addPoolCypressDataRequest(pool);
+            });
+
+            const sources = getExpandedPoolsDistributionSourcePools(state);
+            [...(sources ?? new Set()).values()].forEach((pool) => {
+                addPoolCypressDataRequest(pool);
             });
         }
 
@@ -338,6 +349,69 @@ function loadExpandedOperationsAndPools(tree: string): ExpandedPoolsThunkAction 
                     });
                 }
             });
+    };
+}
+
+export function addDistributionSourcePool(pool?: string): ExpandedPoolsThunkAction {
+    return (dispatch, getState) => {
+        const state = getState();
+        const prevSources = getExpandedPoolsDistributionSourcePools(state);
+        if (pool && !prevSources?.has(pool)) {
+            const newSources = new Set(prevSources);
+            newSources.add(pool);
+            dispatch({
+                type: SCHEDULING_EXPANDED_POOLS_PARTITION,
+                data: {distributionSourcePools: newSources},
+            });
+            dispatch(reloadPoolCypressData(pool));
+        }
+    };
+}
+
+export function resetDistributionSourcePools() {
+    return {type: SCHEDULING_EXPANDED_POOLS_PARTITION, data: {distributionSourcePools: undefined}};
+}
+
+function reloadPoolCypressData(pool?: string): ExpandedPoolsThunkAction {
+    return (dispatch, getState) => {
+        if (!pool) {
+            return undefined;
+        }
+
+        const state = getState();
+        const tree = getTree(getState());
+        const loadAll = getExpandedPoolsLoadAll(state);
+
+        const expandedPools: Map<string, ExpandedPoolInfo> = loadAll
+            ? new Map()
+            : getSchedulingOperationsExpandedPools(state)[tree] ?? new Map();
+
+        const {parentPoolPath, isEphemeral} = expandedPools.get(pool) ?? {};
+        const cypressDataPath = parentPoolPath
+            ? `//sys/pool_trees/${tree}/${parentPoolPath}/${pool}/@`
+            : `//sys/pool_trees/${tree}/${pool}/@`;
+
+        if (pool !== ROOT_POOL_NAME || !isEphemeral) {
+            return wrapApiPromiseByToaster(
+                ytApiV3Id.get(YTApiId.schedulingPoolCypressData, {
+                    path: cypressDataPath,
+                    attributes: POOL_TREE_GET_ATTRS,
+                }),
+                {
+                    toasterName: 'reloadPoolCypressData',
+                    skipSuccessToast: true,
+                    errorContent: `Failed to reload configuration of ${pool}`,
+                    skipMissingPath: true,
+                },
+            ).then((data) => {
+                const prevCypressData = getExpandedPoolCypressData(getState());
+                const flattenCypressData = Object.assign({}, prevCypressData, {
+                    [pool]: {$attributes: data, $value: pool},
+                });
+                dispatch({type: SCHEDULING_EXPANDED_POOLS_PARTITION, data: {flattenCypressData}});
+            });
+        }
+        return undefined;
     };
 }
 

@@ -18,6 +18,8 @@ export const getSchedulingOperationsLoaded = (state: RootState) =>
 export const getSchedulingOperationsExpandedPools = (state: RootState) =>
     state.scheduling.expandedPools.expandedPools;
 export const getExpandedPoolsLoadAll = (state: RootState) => state.scheduling.expandedPools.loadAll;
+export const getExpandedPoolsDistributionSourcePools = (state: RootState) =>
+    state.scheduling.expandedPools.distributionSourcePools;
 
 export const getSchedulingOperationsLoadingStatus = createSelector(
     [getSchedulingOperationsLoading, getSchedulingOperationsLoaded],

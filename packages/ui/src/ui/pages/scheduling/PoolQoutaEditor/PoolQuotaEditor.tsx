@@ -12,6 +12,8 @@ import {
 } from '../../../store/selectors/scheduling/scheduling';
 import Select from '../../../components/Select/Select';
 import {PoolResourceType, getPoolResourceInfo} from '../../../utils/scheduling/scheduling';
+import {useThunkDispatch} from '../../../store/thunkDispatch';
+import {addDistributionSourcePool} from '../../../store/actions/scheduling/expanded-pools';
 
 interface Props {
     resourceType: PoolResourceType;
@@ -128,6 +130,7 @@ function PoolSourceSuggest(props: {
     disabled?: boolean;
     skipParent?: boolean;
 }) {
+    const dispatch = useThunkDispatch();
     const {value, onChange, disabled, skipParent} = props;
     const sources = useSelector(getSchedulingSourcesOfEditItem);
     const sourcesNoParent = useSelector(getSchedulingSourcesOfEditItemSkipParent);
@@ -142,10 +145,18 @@ function PoolSourceSuggest(props: {
         });
     }, [skipParent, sources, sourcesNoParent]);
 
+    React.useEffect(() => {
+        dispatch(addDistributionSourcePool(value));
+    }, [value]);
+
     return (
         <Select
             value={value ? [value] : undefined}
-            onUpdate={(vals) => onChange(vals[0])}
+            onUpdate={(vals) => {
+                const pool = vals[0];
+                dispatch(addDistributionSourcePool(pool));
+                onChange(pool);
+            }}
             items={items}
             disabled={!sources?.length || disabled}
             placeholder={'Select pool...'}

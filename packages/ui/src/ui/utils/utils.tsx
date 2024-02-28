@@ -15,6 +15,7 @@ import {LOADING_STATUS} from '../constants';
 import {ErrorInfo} from '../store/reducers/modals/errors';
 import {showErrorModal} from '../store/actions/modals/errors';
 import {BatchResultsItem} from '../../shared/yt-types';
+import {YTErrors} from '../rum/constants';
 
 import {UIBatchError} from './errors/ui-error';
 
@@ -119,6 +120,7 @@ interface CommonWrapApiOptions<T> {
     successTitle?: string;
     timeout?: number;
     autoHide?: boolean;
+    skipMissingPath?: boolean;
 }
 
 type BatchWrapApiOption =
@@ -174,7 +176,9 @@ export function wrapApiPromiseByToaster<T>(p: Promise<T>, options: WrapApiOption
             const data = error?.response?.data || error;
             const {code, message} = data;
 
-            if (!options.skipErrorToast) {
+            const skipByCode = options.skipMissingPath && code === YTErrors.NODE_DOES_NOT_EXIST;
+
+            if (!options.skipErrorToast && !skipByCode) {
                 toaster.add({
                     name: options.toasterName,
                     type: 'error',

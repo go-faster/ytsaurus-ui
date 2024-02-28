@@ -41,6 +41,7 @@ import Link from '../../../../components/Link/Link';
 import './PoolEditorDialog.scss';
 import UIFactory from '../../../../UIFactory';
 import {createQuotaReqTicketUrl} from '../../../../config';
+import {resetDistributionSourcePools} from '../../../../store/actions/scheduling/expanded-pools';
 
 const block = cn('pool-editor-dialog');
 
@@ -115,6 +116,7 @@ export function PoolEditorDialog() {
 
     const editCloseHandler = useCallback(() => {
         dispatch(closeEditModal({cancelled: true}));
+        dispatch(resetDistributionSourcePools());
     }, [dispatch]);
     const editConfirmHandler = useCallback(
         async (form: FormApi<PoolEditorFormValues>) => {

@@ -19,7 +19,7 @@ export type ExpandedPoolInfo = {parentPoolPath: string; isEphemeral?: boolean};
 export interface ExpandedPoolsState {
     loading: boolean;
     loaded: boolean;
-    error?: YTError;
+    error: YTError | undefined;
 
     rawPools: Record<string, PoolInfo>;
     rawOperations: Record<string, OperationInfo>;
@@ -31,6 +31,8 @@ export interface ExpandedPoolsState {
      * example: `{'childPoolName': {parentPoolPath: 'parentPoolName/subParentName', isEphemeral: true}}`
      */
     expandedPools: Record<string, Map<string, ExpandedPoolInfo>>;
+
+    distributionSourcePools: Set<string> | undefined;
     loadAll: boolean;
 }
 
@@ -46,6 +48,8 @@ const ephemeralState: Omit<ExpandedPoolsState, keyof typeof persistentState> = {
     rawPools: EMPTY_OBJECT,
     rawOperations: EMPTY_OBJECT,
     flattenCypressData: EMPTY_OBJECT,
+
+    distributionSourcePools: undefined,
 
     expandedPoolsTree: '',
 
@@ -89,7 +93,12 @@ export type ExpandedPoolsAction =
       >
     | ActionD<
           typeof SCHEDULING_EXPANDED_POOLS_PARTITION,
-          Partial<Pick<ExpandedPoolsState, 'expandedPools' | 'loadAll'>>
+          Partial<
+              Pick<
+                  ExpandedPoolsState,
+                  'expandedPools' | 'loadAll' | 'flattenCypressData' | 'distributionSourcePools'
+              >
+          >
       >;
 
 export default mergeStateOnClusterChange(ephemeralState, persistentState, reducer);
