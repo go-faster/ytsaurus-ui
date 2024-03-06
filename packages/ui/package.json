@@ -88,7 +88,7 @@
     "@gravity-ui/chartkit": "^4.7.2",
     "@gravity-ui/components": "^2.4.1",
     "@gravity-ui/dashkit": "^6.0.0",
-    "@gravity-ui/dialog-fields": "^4.3.1",
+    "@gravity-ui/dialog-fields": "^4.3.4",
     "@gravity-ui/eslint-config": "^2.2.0",
     "@gravity-ui/i18n": "^1.0.0",
     "@gravity-ui/icons": "^2.4.0",
@@ -168,7 +168,7 @@
     "wc-react": "^0.5.1"
   },
   "peerDependencies": {
-    "@gravity-ui/dialog-fields": "^4.3.1",
+    "@gravity-ui/dialog-fields": "^4.3.4",
     "@gravity-ui/expresskit": "^1.0.0",
     "@gravity-ui/nodekit": "^1.0.0",
     "@gravity-ui/uikit": "^5.16.0",

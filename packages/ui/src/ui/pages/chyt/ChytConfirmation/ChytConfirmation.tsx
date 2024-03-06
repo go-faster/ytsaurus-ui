@@ -6,6 +6,7 @@ import {Text} from '@gravity-ui/uikit';
 import format from '../../../common/hammer/format';
 
 import {YTDFDialog, makeErrorFields} from '../../../components/Dialog/Dialog';
+import {Bold} from '../../../components/Text/Text';
 import {YTError} from '../../../types';
 import {useThunkDispatch} from '../../../store/thunkDispatch';
 import {chytListAction} from '../../../store/actions/chyt/list';
@@ -63,10 +64,7 @@ function ChytSimpleConfirmation({
             headerProps={{
                 title: (
                     <>
-                        {format.ReadableField(action)}{' '}
-                        <Text variant="header-1" color="secondary">
-                            {alias}
-                        </Text>
+                        {format.ReadableField(action)} {alias}
                     </>
                 ),
             }}
@@ -96,8 +94,7 @@ function ChytSimpleConfirmation({
                     extras: {
                         children: (
                             <>
-                                Are you sure you want to {action} the clique{' '}
-                                <Text color="secondary">{alias}</Text>?
+                                Are you sure you want to {action} the clique <Bold>{alias}</Bold>?
                             </>
                         ),
                     },
