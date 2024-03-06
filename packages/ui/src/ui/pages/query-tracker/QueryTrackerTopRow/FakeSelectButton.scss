@@ -1,0 +1,39 @@
+.query-cluster-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 220px;
+    height: 36px;
+    padding: 8px 10px;
+    border: 1px solid var(--g-color-line-generic-solid);
+    border-radius: var(--g-border-radius-l);
+
+    &_open {
+        border-color: var(--input-border-active);
+    }
+
+    &_loading {
+
+            background-image: repeating-linear-gradient(
+                    -45deg,
+                    var(--g-color-base-generic),
+                    var(--g-color-base-generic) 4px,
+                    var(--g-color-private-white-150) 4px,
+                    var(--g-color-private-white-150) 8px
+            );
+            background-size: 150%;
+            background-clip: padding-box;
+            animation: loading-animation .5s linear infinite;
+
+    }
+}
+
+@keyframes loading-animation {
+    from {
+        background-position: -12px 0;
+    }
+    to {
+        background-position: 0 0;
+    }
+}

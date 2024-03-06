@@ -1,0 +1,12 @@
+.query-cluster-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    width: 20px;
+    border-radius: 4px;
+    background: var(--cluster-color);
+    color: #ffffff;
+    font-size: 9px;
+    text-transform: uppercase;
+}

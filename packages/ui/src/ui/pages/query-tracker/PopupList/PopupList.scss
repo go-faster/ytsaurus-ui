@@ -1,0 +1,16 @@
+.popup-list {
+    &__search-wrap{
+        padding: 8px;
+    }
+
+    &__spacer {
+        width: 100%;
+        border-top: 1px solid var(--dark-divider);
+    }
+
+    &__items-wrap {
+        padding: 4px;
+        max-height: 320px;
+        overflow: auto;
+    }
+}

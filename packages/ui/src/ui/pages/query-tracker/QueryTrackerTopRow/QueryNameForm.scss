@@ -1,0 +1,19 @@
+.query-name-form {
+    display: flex;
+    align-items: center;
+    gap: 0 8px;
+
+    &__name {
+        max-width: 110px;
+    }
+}
+
+.query-name-popup {
+    width: 360px;
+
+    .yc-popup__content {
+        display: flex;
+        gap: 0 4px;
+        padding: 8px;
+    }
+}

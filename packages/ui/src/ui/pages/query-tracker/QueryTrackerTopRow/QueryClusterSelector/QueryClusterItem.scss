@@ -1,0 +1,26 @@
+.query-cluster-item {
+    display: flex;
+    gap: 0 16px;
+    width: 200px;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: var(--g-border-radius-l);
+
+    &:hover {
+        background: rgba(114, 182, 245, 0.15);
+    }
+
+    &_active {
+        background: rgba(114, 182, 245, 0.15);
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        font-size: 13px;
+    }
+
+    &__environment {
+        text-transform: capitalize;
+    }
+}
