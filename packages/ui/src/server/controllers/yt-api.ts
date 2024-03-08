@@ -86,7 +86,7 @@ export async function ytTvmApiHandler(req: Request, res: Response) {
     }
 
     try {
-        const {proxy, secure} = setup;
+        const {proxy, secure, proxyPort} = setup;
         const proto = secure ? 'https' : 'http';
         let requestProxy = proxy;
         if (commandInfo?.heavy && !isLocalCluster) {
@@ -97,6 +97,10 @@ export async function ytTvmApiHandler(req: Request, res: Response) {
                 headers: ctx.getMetadata(),
             });
             requestProxy = res.data[0];
+            if (proxyPort) {
+                requestProxy += `:${proxyPort}`;
+            }
+            ctx.log(`Using request proxy '${requestProxy}'`);
         }
 
         const search = _.isEmpty(req.query) ? '' : `?${qs.stringify(req.query)}`;

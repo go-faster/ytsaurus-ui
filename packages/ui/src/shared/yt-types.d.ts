@@ -74,6 +74,8 @@ export interface ClusterConfig {
         dataCenters?: Array<string>;
     };
     proxy: string;
+    /* For direct requests to YT-api */
+    proxyPort?: number;
     /**
      * if defined it will be used instead of `proxy`-field for some direct
      * heavy url/commands like: read_table, write_table, get-job-stderr, ...

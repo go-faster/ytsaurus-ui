@@ -15,6 +15,7 @@ function getRobotOAuthToken() {
 export interface YTApiSetup {
     id: string;
     proxy: string;
+    proxyPort?: number;
     authentication: 'none' | 'basic' | 'domain' | {type: 'oauth'; token: string};
     secure: boolean;
     useEncodedParameters: boolean;
@@ -26,13 +27,14 @@ function getClusterSetup(clusterConfig: ClusterConfig): {
     setup: YTApiSetup;
     proxyBaseUrl: string;
 } {
-    const {proxy} = clusterConfig;
+    const {proxy, proxyPort} = clusterConfig;
     const secure = Boolean(clusterConfig?.secure);
 
     return {
         setup: {
             id: clusterConfig?.id,
             proxy,
+            proxyPort: proxyPort,
             authentication: clusterConfig?.authentication || 'none',
             secure,
             useEncodedParameters: true,
